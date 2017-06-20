@@ -12,9 +12,10 @@ int cgiMain()
 
 	FILE * fd;
 
-	char name[32] = "\0";
-	char age[16] = "\0";
-	char stuId[32] = "\0";
+	char sname[20] = "\0";
+	char age[20] = "\0";
+	char sno[20] = "\0";
+	char sex[20] = "\0";
 	int status = 0;
 	char ch;
 
@@ -31,24 +32,32 @@ int cgiMain()
 	}
 	fclose(fd);
 
-	status = cgiFormString("name",  name, 32);
+	status = cgiFormString("sname",  sname, 20);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get name error!\n");
+		fprintf(cgiOut, "get sname error!\n");
 		return 1;
 	}
 
-	status = cgiFormString("age",  age, 16);
+	status = cgiFormString("age",  age, 20);
 	if (status != cgiFormSuccess)
 	{
 		fprintf(cgiOut, "get age error!\n");
 		return 1;
 	}
 
-	status = cgiFormString("stuId",  stuId, 32);
+	status = cgiFormString("sno",  sno, 20);
 	if (status != cgiFormSuccess)
 	{
 		fprintf(cgiOut, "get stuId error!\n");
+		return 1;
+	}
+	
+	
+	status = cgiFormString("sex",  sex, 20);
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get sex error!\n");
 		return 1;
 	}
 
@@ -67,7 +76,7 @@ int cgiMain()
 	}
 
 	//连接数据库
-	db = mysql_real_connect(db, "127.0.0.1", "root", "123456", "stu",  3306, NULL, 0);
+	db = mysql_real_connect(db, "127.0.0.1", "root", "yes", "stu",  3306, NULL, 0);
 	if (db == NULL)
 	{
 		fprintf(cgiOut,"mysql_real_connect fail:%s\n", mysql_error(db));
@@ -90,7 +99,7 @@ int cgiMain()
 
 
 
-	sprintf(sql, "insert into stu values(%d, '%s', %d)", atoi(stuId), name, atoi(age));
+	sprintf(sql, "insert into stu values(%d, '%s', %d,%d)", atoi(stuId), name, atoi(age),sex);
 	if (mysql_real_query(db, sql, strlen(sql) + 1) != 0)
 	{
 		fprintf(cgiOut, "%s\n", mysql_error(db));
